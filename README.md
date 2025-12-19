@@ -83,6 +83,14 @@ add this in index.css
 
 
 
+useref is used in EmailVerify.jsx
+
+its used to store that store and input value in current value
+
+
+
+
+
 ------------
 why we use jsx in frontend and js in backend file
 
