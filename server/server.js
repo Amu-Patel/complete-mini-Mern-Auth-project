@@ -18,9 +18,6 @@ app.use(cookieParser());
 app.use(cors({origin: allowedOrigins, credentials:true}))
 
 
-// const allowedOrigins = ['http://localhost:5173']
-
-
 
 //APT endpoints
 
