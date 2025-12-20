@@ -1,17 +1,15 @@
 # Mern-Authentication-
 learning about authentication backend connection and more about backend technologies.
 
-
-
-backend start:
-		npm init
+backend start with server.js
+		npm init ------> it creates package.json
 then do okk everythings
 		npm i <install all packages whatever you want>
 		packages like 
-		-express,
+		-express-----its used to create backend
 		-cors----- allow to connect backend with frontend, 
 		-dotenv---- help us to store environment variable in the backend, 
-		-nodemon---- help us to restart when we make any changes in the backend, 			-jsonwebtoken----using this we create token for authenication,
+		-nodemon---- help us to restart when we make any changes in the codefiles, 			-jsonwebtoken----using this we create token for authenication,
  		-mongoose----helps to connects mongoDB database, 
 		-bcryptjs---- encrypt the password and  save in the database,
 		-nodemailer----helps us to send the emails, 
@@ -29,7 +27,7 @@ It is used to run some code for every incoming request before sending a response
 one of the SMTP provider called nodemailer(bravo) used in this we can use Google mailer provider also
 
 ------------------------------------------------------------------------------------------------------------
-client--
+client(frontend)--
 
 npm create vite@latest--- then everythings ok ok
 
@@ -95,3 +93,5 @@ its used to store that store and input value in current value
 why we use jsx in frontend and js in backend file
 
 what is the diff btw app.jsx and main.jsx
+
+why we use backticks 
