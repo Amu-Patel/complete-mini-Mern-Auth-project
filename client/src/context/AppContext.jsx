@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 
 export const AppContext = createContext();
 
-export const AppContextProvider = ({ children }) => {
+export const AppContextProvider = (props) => {
 
   axios.defaults.withCredentials = true;
 
@@ -58,7 +58,7 @@ export const AppContextProvider = ({ children }) => {
         setUserData,
       }}
     >
-      {children}
+      {props.children}
     </AppContext.Provider>
   );
 };
