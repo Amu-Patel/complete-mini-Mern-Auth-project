@@ -39,6 +39,8 @@ export const register = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
+
+    // Sending welcome emails
     try {
       await transporter.sendMail({
         from: process.env.SENDER_EMAIL,
@@ -112,73 +114,85 @@ export const logout = async (req, res) => {
   }
 };
 
-export const sendVerifyOtp = async(req, res)=>{
-    try {
+export const sendVerifyOtp = async (req, res) => {
+  try {
+    const userId = req.userId;
 
-        const{userId}=req.body;
+    const user = await userModel.findById(userId);
 
-        const user= await userModel.findById(userId);
-
-        if(user.isAccountVerified){
-            return res.json({success: false,message:"Account Already Verified"});
-        }
-
-        const otp= String(Math.floor(100000 + Math.random() * 900000)); //6 digit Otp generate mechansism
-
-        user.verifyOtp=otp;
-        user.verifyOtpExpireAt = Date.now() + 24 * 60 * 60 * 1000
-
-        await user.save();
-
-        const mailOption={
-            from:process.env.SENDER_EMAIL,
-            to: user.email,
-            subject: 'Account Verification OTP',
-            text:`Your OTP is ${otp}. Verify your account using this OTP.`
-        }
-        await transporter.sendMail(mailOption);
-
-        res.json({success:true, message: 'Verification OTP Sent on Email'})
-        
-    } catch (error) {
-        res.json({success:false, message:error.message});
-        
+    if (!user) {
+      return res.json({ success: false, message: "User not found" });
     }
-}
 
-export const verifyEmail= async(req,res)=>{
-    const {userId, Otp}=req.body;
-
-    if(!userId || !otp){
-        return res.json({success:false, message:'Missing Details'});
+    if (user.isAccountVerified) {
+      return res.json({
+        success: false,
+        message: "Account already verified",
+      });
     }
-    try {
-        const user= await userModel.findById(userId);
 
-        if(!user){
-            return res.json({success:false,message:'User Not Found'});
-        }
+    const otp = String(Math.floor(100000 + Math.random() * 900000));
 
-        if(user.verifyOtp==='' || user.verifyOtp!==otp){
-            return res.json({success:false, message:'Invalid OTP'});
-        }
+    user.verifyOtp = otp;
+    user.verifyOtpExpireAt = Date.now() + 24 * 60 * 60 * 1000;
 
-        if(user.verifyOtpExpireAt < Date.now()){
-            return res.json({success:false, message: 'OTP Expired'});
-        }
+    await user.save();
 
-        user.isAccountVerified =true;
-        user.verifyOtp='';
-        user.verifyOtpExpireAt=0;
+    await transporter.sendMail({
+      from: process.env.SENDER_EMAIL,
+      to: user.email,
+      subject: "Account Verification OTP",
+      text: `Your OTP is ${otp}`,
+    });
 
-        await user.save();
-        return res.json({success:true, message: 'Email verified Successfully'})
-        
-    } catch (error) {
-        return res.json({success: false, message: error.message});
-        
+    return res.json({
+      success: true,
+      message: "Verification OTP sent",
+    });
+  } catch (error) {
+    return res.json({ success: false, message: error.message });
+  }
+};
+
+
+export const verifyEmail = async (req, res) => {
+  const { otp } = req.body;
+  const userId = req.userId;
+
+  if (!otp) {
+    return res.json({ success: false, message: "OTP required" });
+  }
+
+  try {
+    const user = await userModel.findById(userId);
+
+    if (!user) {
+      return res.json({ success: false, message: "User not found" });
     }
-}
+
+    if (user.verifyOtp !== otp) {
+      return res.json({ success: false, message: "Invalid OTP" });
+    }
+
+    if (user.verifyOtpExpireAt < Date.now()) {
+      return res.json({ success: false, message: "OTP expired" });
+    }
+
+    user.isAccountVerified = true;
+    user.verifyOtp = "";
+    user.verifyOtpExpireAt = 0;
+
+    await user.save();
+
+    return res.json({
+      success: true,
+      message: "Email verified successfully",
+    });
+  } catch (error) {
+    return res.json({ success: false, message: error.message });
+  }
+};
+
 
 //check if user is authencticated
 export const isAuthenticated = async(req, res)=>{
