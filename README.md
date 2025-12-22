@@ -97,3 +97,4 @@ what is the diff btw app.jsx and main.jsx
 why we use backticks 
 
 **checks all api uses and frontend code reviews**
+
